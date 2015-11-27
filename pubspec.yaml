@@ -1,0 +1,14 @@
+name: dartivity_messaging
+version: 0.1.0
+author: Steve Hamblett<steve.hamblett@linux.com>
+description: The messaging component of the Dartivity IOT suite.
+homepage: https://github.com/shamblett/dartivity_messaging
+environment:
+  sdk: '>=1.0.0 <2.0.0'
+dependencies:
+  gcloud: '>0.2.0'
+  googleapis_auth: any
+  json_object: '>=1.0.19'
+  crypto: 'any'
+dev_dependencies:
+  test: '>=0.12.0 <0.13.0'
