@@ -16,4 +16,5 @@ pubspec.lock
 # Idea
 .idea
 
-
+# Credentials
+test/lib/credentials
