@@ -7,6 +7,9 @@
 
 part of dartivity_messaging;
 
+/// Message types
+enum Type { whoHas, iHave, resourceDetails, clientInfo, unknown }
+
 class DartivityMessage {
   /// Type
   Type _type = Type.unknown;

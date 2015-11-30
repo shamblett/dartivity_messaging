@@ -20,5 +20,3 @@ part 'src/messages/dartivity_message.dart';
 
 part 'src/dartivity_messaging_exception.dart';
 
-/// Message types
-enum Type { whoHas, iHave, resourceDetails, clientInfo, unknown }
