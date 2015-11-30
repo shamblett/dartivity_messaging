@@ -116,7 +116,13 @@ class DartivityMessaging {
   ///
   /// message - the message string to send
   Future send(String message) async {
-    if (ready) await _subscription.topic.publishString(message);
+    Completer completer = new Completer();
+    if (ready) {
+      completer.complete(await _subscription.topic.publishString(message));
+    } else {
+      completer.complete(null);
+    }
+    return completer.future;
   }
 
   /// close

@@ -5,6 +5,7 @@
  * Copyright :  S.Hamblett 2015
  */
 
+@TestOn("vm")
 library dartivity_messaging.test;
 
 import 'dart:async';
@@ -14,7 +15,9 @@ import 'package:dartivity_messaging/dartivity_messaging.dart';
 import 'package:test/test.dart';
 import 'package:json_object/json_object.dart' as json;
 
-void main() {
+import 'dartivity_messaging_test_cfg.dart' as cfg;
+
+int main() {
   group("Message Tests", () {
     test("Who Has  - invalid source", () {
       try {
@@ -215,6 +218,25 @@ void main() {
           "Type : Type.iHave, Provider : Unknown, Host : localhost, Source : web-server, Destination : global, Resource Name : oic/res, Resource Details : {}");
     });
   });
+
+  group("Messaging Tests", () {
+    // Create a messaging client
+    DartivityMessaging client1 = new DartivityMessaging(cfg.clientId1);
+
+    test("Send before initialised", () async {
+      DartivityMessage noSend = new DartivityMessage.iHave(
+          "", "", "", {}, "", DartivityMessage.PROVIDER_IOTIVITY);
+      var res = await client1.send(noSend.toJSON());
+      expect(res, isNull);
+    });
+
+    test("Initialise - No credentials", () async {
+      bool res = await client1.initialise(
+          null, cfg.MESS_PROJECT_ID, cfg.MESS_TOPIC);
+    });
+  });
+
+  return 0;
 }
 
 //
