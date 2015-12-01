@@ -50,10 +50,17 @@ class DartivityMessage {
   /// Resource details
   Map<String, dynamic> _resourceDetails = {};
 
+  /// Invalidate cache instruction to clients, causes co-operating
+  /// clients to refresh local caches for the current whoHas message.
+  /// Advisory only, clients can ignore this if they wish.
+  bool _refreshCache = false;
+
+  bool get refreshCache => _refreshCache;
+
   Map<String, dynamic> get resourceDetails => _resourceDetails;
 
   DartivityMessage.whoHas(String source, String resourceName,
-      [String host = ""]) {
+      [String host = "", bool refreshCache = false]) {
     if ((source == null) || (resourceName == null) || (host == null)) {
       throw new DartivityMessagingException(
           DartivityMessagingException.INVALID_WHOHAS_MESSAGE);
@@ -63,6 +70,7 @@ class DartivityMessage {
     _destination = ADDRESS_GLOBAL;
     _resourceName = resourceName;
     _host = host;
+    _refreshCache = refreshCache;
   }
 
   DartivityMessage.iHave(String source, String destination, String resourceName,
@@ -93,8 +101,9 @@ class DartivityMessage {
       jsonobject.JsonObject jsonobj =
       new jsonobject.JsonObject.fromJsonString(input);
       List<MessageType> types = MessageType.values;
-      _type =
-      jsonobj.containsKey('type') ? types[jsonobj.type] : MessageType.unknown;
+      _type = jsonobj.containsKey('type')
+          ? types[jsonobj.type]
+          : MessageType.unknown;
       _host = jsonobj.containsKey('host') ? jsonobj.host : "";
       _provider =
       jsonobj.containsKey('provider') ? jsonobj.provider : PROVIDER_UNKNOWN;
@@ -105,6 +114,8 @@ class DartivityMessage {
       jsonobj.containsKey('resourceName') ? jsonobj.resourceName : "";
       _resourceDetails =
       jsonobj.containsKey('resourceDetails') ? jsonobj.resourceDetails : {};
+      _refreshCache =
+      jsonobj.containsKey('refreshCache') ? jsonobj.refreshCache : false;
     }
   }
 
@@ -125,6 +136,8 @@ class DartivityMessage {
       _host = input.containsKey('host') ? input.host : "";
       _provider =
       input.containsKey('provider') ? input.provider : PROVIDER_UNKNOWN;
+      _refreshCache =
+      input.containsKey('refreshCache') ? input.refreshCache : false;
     }
   }
 
@@ -138,6 +151,8 @@ class DartivityMessage {
     output.resourceDetails = _resourceDetails;
     output.host = _host;
     output.provider = _provider;
+    output.refreshCache = _refreshCache;
+
     return output.toString();
   }
 

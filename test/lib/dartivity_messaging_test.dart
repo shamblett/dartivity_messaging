@@ -57,23 +57,24 @@ int main() {
       DartivityMessage message = new DartivityMessage.whoHas(
           DartivityMessage.ADDRESS_WEB_SERVER, "oic/res", "localhost");
       expect(message.toJSON(),
-          '{"type":0,"source":"web-server","destination":"global","resourceName":"oic/res","resourceDetails":{},"host":"localhost","provider":"Unknown"}');
+          '{"type":0,"source":"web-server","destination":"global","resourceName":"oic/res","resourceDetails":{},"host":"localhost","provider":"Unknown","refreshCache":false}');
     });
 
     test("Who Has  - fromJSON", () {
       DartivityMessage message = new DartivityMessage.fromJSON(
-          '{"type":0,"source":"web-server","destination":"global","resourceName":"oic/res","resourceDetails":{},"host":"localhost", "provider":"Unknown"}');
+          '{"type":0,"source":"web-server","destination":"global","resourceName":"oic/res","resourceDetails":{},"host":"localhost", "provider":"Unknown","refreshCache":false}');
       expect(message.host, "localhost");
       expect(message.destination, DartivityMessage.ADDRESS_GLOBAL);
       expect(message.source, DartivityMessage.ADDRESS_WEB_SERVER);
       expect(message.resourceDetails, {});
       expect(message.resourceName, "oic/res");
       expect(message.provider, DartivityMessage.PROVIDER_UNKNOWN);
+      expect(message.refreshCache, false);
     });
 
     test("Who Has  - fromJSONObject", () {
       json.JsonObject job = new json.JsonObject.fromJsonString(
-          '{"type":0,"source":"web-server","destination":"global","resourceName":"oic/res","resourceDetails":{},"host":"localhost", "provider":"Unknown"}');
+          '{"type":0,"source":"web-server","destination":"global","resourceName":"oic/res","resourceDetails":{},"host":"localhost", "provider":"Unknown","refreshCache":true}');
       DartivityMessage message = new DartivityMessage.fromJSONObject(job);
       expect(message.host, "localhost");
       expect(message.destination, DartivityMessage.ADDRESS_GLOBAL);
@@ -81,6 +82,7 @@ int main() {
       expect(message.resourceDetails, {});
       expect(message.resourceName, "oic/res");
       expect(message.provider, DartivityMessage.PROVIDER_UNKNOWN);
+      expect(message.refreshCache, true);
     });
 
     test("Who Has - toString", () {
@@ -177,23 +179,24 @@ int main() {
           "localhost",
           DartivityMessage.PROVIDER_IOTIVITY);
       expect(message.toJSON(),
-          '{"type":1,"source":"web-server","destination":"global","resourceName":"oic/res","resourceDetails":{},"host":"localhost","provider":"Iotivity"}');
+          '{"type":1,"source":"web-server","destination":"global","resourceName":"oic/res","resourceDetails":{},"host":"localhost","provider":"Iotivity","refreshCache":false}');
     });
 
     test("I Have  - fromJSON", () {
       DartivityMessage message = new DartivityMessage.fromJSON(
-          '{"type":1,"source":"web-server","destination":"global","resourceName":"oic/res","resourceDetails":{},"host":"localhost","provider":"Iotivity"}');
+          '{"type":1,"source":"web-server","destination":"global","resourceName":"oic/res","resourceDetails":{},"host":"localhost","provider":"Iotivity","refreshCache":false}');
       expect(message.host, "localhost");
       expect(message.destination, DartivityMessage.ADDRESS_GLOBAL);
       expect(message.source, DartivityMessage.ADDRESS_WEB_SERVER);
       expect(message.resourceDetails, {});
       expect(message.resourceName, "oic/res");
       expect(message.provider, DartivityMessage.PROVIDER_IOTIVITY);
+      expect(message.refreshCache, false);
     });
 
     test("I Have  - fromJSONObject", () {
       json.JsonObject job = new json.JsonObject.fromJsonString(
-          '{"type":1,"source":"web-server","destination":"global","resourceName":"oic/res","resourceDetails":{},"host":"localhost", "provider":"Iotivity"}');
+          '{"type":1,"source":"web-server","destination":"global","resourceName":"oic/res","resourceDetails":{},"host":"localhost", "provider":"Iotivity","refreshCache":false}');
       DartivityMessage message = new DartivityMessage.fromJSONObject(job);
       expect(message.host, "localhost");
       expect(message.destination, DartivityMessage.ADDRESS_GLOBAL);
@@ -201,6 +204,7 @@ int main() {
       expect(message.resourceDetails, {});
       expect(message.resourceName, "oic/res");
       expect(message.provider, DartivityMessage.PROVIDER_IOTIVITY);
+      expect(message.refreshCache, false);
     });
 
     test("I Have  - toString", () {

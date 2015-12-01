@@ -19,4 +19,3 @@ part 'src/dartivity_messaging.dart';
 part 'src/messages/dartivity_message.dart';
 
 part 'src/dartivity_messaging_exception.dart';
-
