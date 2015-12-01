@@ -8,9 +8,6 @@
 @TestOn("vm")
 library dartivity_messaging.test;
 
-import 'dart:async';
-import 'dart:io';
-
 import 'package:dartivity_messaging/dartivity_messaging.dart';
 import 'package:test/test.dart';
 import 'package:json_object/json_object.dart' as json;
@@ -90,7 +87,7 @@ int main() {
       DartivityMessage message = new DartivityMessage.whoHas(
           DartivityMessage.ADDRESS_WEB_SERVER, "oic/res", "localhost");
       expect(message.toString(),
-          "Type : Type.whoHas, Provider : Unknown, Host : localhost, Source : web-server, Destination : global, Resource Name : oic/res, Resource Details : {}");
+          "Type : MessageType.whoHas, Provider : Unknown, Host : localhost, Source : web-server, Destination : global, Resource Name : oic/res, Resource Details : {}");
     });
 
     test("I Have  - invalid source", () {
@@ -215,24 +212,93 @@ int main() {
           "localhost",
           DartivityMessage.PROVIDER_UNKNOWN);
       expect(message.toString(),
-          "Type : Type.iHave, Provider : Unknown, Host : localhost, Source : web-server, Destination : global, Resource Name : oic/res, Resource Details : {}");
+          "Type : MessageType.iHave, Provider : Unknown, Host : localhost, Source : web-server, Destination : global, Resource Name : oic/res, Resource Details : {}");
     });
   });
 
   group("Messaging Tests", () {
-    // Create a messaging client
+    // Create our messaging test clients
     DartivityMessaging client1 = new DartivityMessaging(cfg.clientId1);
+    DartivityMessaging client2 = new DartivityMessaging(cfg.clientId2);
 
     test("Send before initialised", () async {
       DartivityMessage noSend = new DartivityMessage.iHave(
           "", "", "", {}, "", DartivityMessage.PROVIDER_IOTIVITY);
-      var res = await client1.send(noSend.toJSON());
+      var res = await client1.send(noSend);
+      expect(res, isNull);
+    });
+
+    test("Receive before initialised", () async {
+      var res = await client1.receive();
       expect(res, isNull);
     });
 
     test("Initialise - No credentials", () async {
+      try {
+        bool res =
+        await client1.initialise(null, cfg.MESS_PROJECT_ID, cfg.MESS_TOPIC);
+      } catch (e) {
+        expect(
+            e.toString(),
+            DartivityMessagingException.HEADER +
+                DartivityMessagingException.NO_CREDFILE_SPECIFIED);
+      }
+    });
+
+    test("Initialise - No project name", () async {
+      try {
+        bool res =
+        await client1.initialise(cfg.MESS_CRED_PATH, null, cfg.MESS_TOPIC);
+      } catch (e) {
+        expect(
+            e.toString(),
+            DartivityMessagingException.HEADER +
+                DartivityMessagingException.NO_PROJECTNAME_SPECIFIED);
+      }
+    });
+
+    test("Initialise - No topic", () async {
+      try {
+        bool res =
+        await client1.initialise(cfg.MESS_CRED_PATH, cfg.MESS_TOPIC, null);
+      } catch (e) {
+        expect(
+            e.toString(),
+            DartivityMessagingException.HEADER +
+                DartivityMessagingException.NO_TOPIC_SPECIFIED);
+      }
+    });
+
+    test("Initialise - send/receive", () async {
       bool res = await client1.initialise(
-          null, cfg.MESS_PROJECT_ID, cfg.MESS_TOPIC);
+          cfg.MESS_CRED_PATH, cfg.MESS_PROJECT_ID, cfg.MESS_TOPIC);
+      expect(res, true);
+      expect(client1.ready, true);
+
+      res = await client2.initialise(
+          cfg.MESS_CRED_PATH, cfg.MESS_PROJECT_ID, cfg.MESS_TOPIC);
+      expect(res, true);
+      expect(client2.ready, true);
+
+      DartivityMessage whoHas = new DartivityMessage.whoHas(
+          DartivityMessage.ADDRESS_WEB_SERVER, "oic/res", "localhost");
+
+      DartivityMessage message = await client1.send(whoHas);
+      expect(message, isNotNull);
+
+      message = await client2.receive();
+      expect(message, isNotNull);
+      expect(message.type, MessageType.whoHas);
+      expect(message.destination, DartivityMessage.ADDRESS_GLOBAL);
+      expect(message.host, 'localhost');
+      expect(message.source, DartivityMessage.ADDRESS_WEB_SERVER);
+    });
+
+    test("Close", () async {
+      client1.close();
+      expect(client1.ready, false);
+      client2.close(false);
+      expect(client2.ready, false);
     });
   });
 

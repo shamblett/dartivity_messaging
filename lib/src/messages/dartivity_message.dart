@@ -8,13 +8,13 @@
 part of dartivity_messaging;
 
 /// Message types
-enum Type { whoHas, iHave, resourceDetails, clientInfo, unknown }
+enum MessageType { whoHas, iHave, resourceDetails, clientInfo, unknown }
 
 class DartivityMessage {
   /// Type
-  Type _type = Type.unknown;
+  MessageType _type = MessageType.unknown;
 
-  Type get type => _type;
+  MessageType get type => _type;
 
   /// Dartivity source
   String _source = "";
@@ -58,7 +58,7 @@ class DartivityMessage {
       throw new DartivityMessagingException(
           DartivityMessagingException.INVALID_WHOHAS_MESSAGE);
     }
-    _type = Type.whoHas;
+    _type = MessageType.whoHas;
     _source = source;
     _destination = ADDRESS_GLOBAL;
     _resourceName = resourceName;
@@ -76,7 +76,7 @@ class DartivityMessage {
       throw new DartivityMessagingException(
           DartivityMessagingException.INVALID_IHAVE_MESSAGE);
     }
-    _type = Type.iHave;
+    _type = MessageType.iHave;
     _source = source;
     _destination = destination;
     _resourceName = resourceName;
@@ -88,12 +88,13 @@ class DartivityMessage {
   /// fromJson
   DartivityMessage.fromJSON(String input) {
     if (input == null) {
-      _type = Type.unknown;
+      _type = MessageType.unknown;
     } else {
       jsonobject.JsonObject jsonobj =
       new jsonobject.JsonObject.fromJsonString(input);
-      List<Type> types = Type.values;
-      _type = jsonobj.containsKey('type') ? types[jsonobj.type] : Type.unknown;
+      List<MessageType> types = MessageType.values;
+      _type =
+      jsonobj.containsKey('type') ? types[jsonobj.type] : MessageType.unknown;
       _host = jsonobj.containsKey('host') ? jsonobj.host : "";
       _provider =
       jsonobj.containsKey('provider') ? jsonobj.provider : PROVIDER_UNKNOWN;
@@ -110,10 +111,11 @@ class DartivityMessage {
   /// fromJsonObject
   DartivityMessage.fromJSONObject(jsonobject.JsonObject input) {
     if (input == null) {
-      _type = Type.unknown;
+      _type = MessageType.unknown;
     } else {
-      List<Type> types = Type.values;
-      _type = input.containsKey('type') ? types[input.type] : Type.unknown;
+      List<MessageType> types = MessageType.values;
+      _type =
+      input.containsKey('type') ? types[input.type] : MessageType.unknown;
       _source = input.containsKey('source') ? input.source : "";
       _destination = input.containsKey('destination') ? input.destination : "";
       _resourceName =

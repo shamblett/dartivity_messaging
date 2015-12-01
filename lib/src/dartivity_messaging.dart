@@ -49,6 +49,7 @@ class DartivityMessaging {
   /// credentialsFile - Path to the credentials file
   /// which should be in JSON format
   /// projectName - The project name(actually the google project id)
+  /// topic - the subscription topic
   Future<bool> initialise(String credentialsFile, String projectName,
       String topic) async {
     // Validation
@@ -67,6 +68,7 @@ class DartivityMessaging {
           DartivityMessagingException.NO_TOPIC_SPECIFIED);
     }
 
+    Completer completer = new Completer();
     // Get the credentials file as a string and create a credentials class
     _topic = topic;
     String jsonCredentials = new File(credentialsFile).readAsStringSync();
@@ -91,7 +93,8 @@ class DartivityMessaging {
       }
     }
     _initialised = true;
-    return _initialised;
+    completer.complete(_initialised);
+    return completer.future;
   }
 
   /// recieve
@@ -99,15 +102,27 @@ class DartivityMessaging {
   /// Recieve a message from our subscription
   ///
   /// wait - whether to wait for a message or not, default is not
-  Future<pubsub.Message> receive({wait: true}) async {
+  Future<DartivityMessage> receive({wait: false}) async {
+    Completer completer = new Completer();
     if (ready) {
-      var pullEvent = await _subscription.pull(wait: false);
+      var pullEvent = await _subscription.pull(wait: wait);
       if (pullEvent != null) {
         await pullEvent.acknowledge();
-        return pullEvent.message;
+        String messageString = pullEvent.message.asString;
+        try {
+          DartivityMessage dartivityMessage =
+          new DartivityMessage.fromJSON(messageString);
+          completer.complete(dartivityMessage);
+        } catch (e) {
+          completer.complete(null);
+        }
+      } else {
+        completer.complete(null);
       }
+    } else {
+      completer.complete(null);
     }
-    return null;
+    return completer.future;
   }
 
   /// send
@@ -115,10 +130,11 @@ class DartivityMessaging {
   /// Send a message to our subscription
   ///
   /// message - the message string to send
-  Future send(String message) async {
+  Future<DartivityMessage> send(DartivityMessage message) async {
     Completer completer = new Completer();
     if (ready) {
-      completer.complete(await _subscription.topic.publishString(message));
+      var res = await _subscription.topic.publishString(message.toJSON());
+      completer.complete(message);
     } else {
       completer.complete(null);
     }
@@ -128,7 +144,7 @@ class DartivityMessaging {
   /// close
   ///
   /// Close the messager. Default is to unsubscribe and deauth
-  /// setting unsibscribe to false doesn't do the unsubscribe.
+  /// setting unsubscribe to false doesn't do the unsubscribe.
   void close([bool unsubscribe = true]) {
     // We don't need to wait, just assume pubsub will do this
     if (unsubscribe) {
