@@ -5,6 +5,10 @@
  * Copyright :  S.Hamblett 2015
  */
 
+/// The messaging interface class. This class wraps the gcloud pubsub
+/// packages and provides a simple send/recieve interface for DartivityMessage
+/// classes.
+
 part of dartivity_messaging;
 
 class DartivityMessaging {

@@ -15,7 +15,5 @@ import 'package:googleapis_auth/auth_io.dart' as auth;
 import 'package:json_object/json_object.dart' as jsonobject;
 
 part 'src/dartivity_messaging.dart';
-
 part 'src/messages/dartivity_message.dart';
-
 part 'src/dartivity_messaging_exception.dart';

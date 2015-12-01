@@ -5,6 +5,22 @@
  * Copyright :  S.Hamblett 2015
  */
 
+/// This class defines the Dartivity suite messaging interface comprising
+/// of a general message class that can be constructed to provide the
+/// following messages :-
+///
+/// 1. whoHas - this message can be issued by any Dartivity component to
+/// all other components asking for details of a specific, group or all
+/// resources that component has access to. Its destination address is
+/// global and it should be responded to with a iHave message if the component
+/// determines it has details of the requested resource.
+///
+/// 2. iHave - This message is genertaed by Dartivity suite components
+/// in response to a whoHas message if they have, or can obtain details of
+/// the resource being requested. The destination of the message should be
+/// set to the source field of the whoHas message with the resource payload
+/// itself being provider specific.
+///
 part of dartivity_messaging;
 
 /// Message types
