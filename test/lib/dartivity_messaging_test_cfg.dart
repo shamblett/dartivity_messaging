@@ -13,7 +13,7 @@ const String MESS_PROJECT_ID = 'warm-actor-356';
 
 /// Topic for pubsub
 const String MESS_TOPIC =
-    "projects/${MESS_PROJECT_ID}/topics/${MESS_PACKAGE_NAME}";
+    "projects/${MESS_PROJECT_ID}/topics/${MESS_PACKAGE_NAME}_test";
 
 const String MESS_CRED_PATH =
     '/home/steve/Development/google/dart/projects/${MESS_PACKAGE_NAME}_messaging/test/lib/credentials/Development-87fde7970997.json';
