@@ -1,7 +1,7 @@
 name: dartivity_messaging
 version: 1.0.0
 author: Steve Hamblett<steve.hamblett@linux.com>
-description: The messaging component of the Dartivity IOT suite.
+description: The messaging component of the Dartivity IOT suite of packages.
 homepage: https://github.com/shamblett/dartivity_messaging
 environment:
   sdk: '>=2.0.0-dev <3.0.0'
