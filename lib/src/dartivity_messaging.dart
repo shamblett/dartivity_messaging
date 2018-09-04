@@ -72,7 +72,7 @@ class DartivityMessaging {
           DartivityMessagingException.noTopicSpecified);
     }
 
-    final Completer completer = new Completer();
+    final Completer<bool> completer = new Completer<bool>();
     // Get the credentials file as a string and create a credentials class
     _topic = topic;
     final String jsonCredentials = new File(credentialsFile).readAsStringSync();
@@ -107,7 +107,8 @@ class DartivityMessaging {
   ///
   /// wait - whether to wait for a message or not, default is not
   Future<DartivityMessage> receive({bool wait: false}) async {
-    final Completer<DartivityMessage> completer = new Completer<DartivityMessage>();
+    final Completer<DartivityMessage> completer =
+        new Completer<DartivityMessage>();
     if (ready) {
       final pullEvent = await _subscription.pull(wait: wait);
       if (pullEvent != null) {
@@ -135,7 +136,8 @@ class DartivityMessaging {
   ///
   /// message - the message string to send
   Future<DartivityMessage> send(DartivityMessage message) async {
-    final Completer<DartivityMessage> completer = new Completer<DartivityMessage>();
+    final Completer<DartivityMessage> completer =
+        new Completer<DartivityMessage>();
     if (ready) {
       await _subscription.topic.publishString(message.toJSON());
       completer.complete(message);

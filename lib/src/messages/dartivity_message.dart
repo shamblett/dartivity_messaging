@@ -69,9 +69,7 @@ class DartivityMessage {
       final jsonobject.JsonObjectLite jsonobj =
           new jsonobject.JsonObjectLite.fromJsonString(input);
       final List<MessageType> types = MessageType.values;
-      _type = jsonobj['type'] == 1
-          ? types[(jsonobj as dynamic).type]
-          : MessageType.unknown;
+      _type = types[(jsonobj as dynamic).type];
       _host = jsonobj['host'] = (jsonobj as dynamic).host;
       _provider = jsonobj['provider'] = (jsonobj as dynamic).provider;
       _source = jsonobj['source'] = (jsonobj as dynamic).source;

@@ -16,7 +16,7 @@ const String messTopic =
     "projects/${messProjectId}/topics/${messPackageName}_test";
 
 const String messCredPath =
-    '/home/steve/Development/google/dart/projects/${messPackageName}_messaging/test/lib/credentials/Development-87fde7970997.json';
+    '\\test\\lib\\credentials\\Development-5d8666050474.json';
 
 /// Client id's
 const String clientId1 = 'dell-base-d5dcb860-3ad8-5329-ab54-5c3c9c5f2242%100';

@@ -8,6 +8,8 @@
 @TestOn("vm")
 library dartivity_messaging.test;
 
+import 'dart:io';
+
 import 'package:dartivity_messaging/dartivity_messaging.dart';
 import 'package:test/test.dart';
 import 'package:json_object_lite/json_object_lite.dart' as json;
@@ -286,13 +288,15 @@ int main() {
     });
 
     test("Initialise - send/receive", () async {
+      String credentialsPath = Directory.current.path + cfg.messCredPath;
+      print("Credentials path: $credentialsPath");
       bool res = await client1.initialise(
-          cfg.messCredPath, cfg.messProjectId, cfg.messTopic);
+          credentialsPath, cfg.messProjectId, cfg.messTopic);
       expect(res, true);
       expect(client1.ready, true);
 
       res = await client2.initialise(
-          cfg.messCredPath, cfg.messProjectId, cfg.messTopic);
+          credentialsPath, cfg.messProjectId, cfg.messTopic);
       expect(res, true);
       expect(client2.ready, true);
 
