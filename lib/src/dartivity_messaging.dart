@@ -12,6 +12,10 @@
 part of dartivity_messaging;
 
 class DartivityMessaging {
+  DartivityMessaging(String dartivityId) {
+    _dartivityId = dartivityId;
+  }
+
   /// Authenticated
   bool _authenticated = false;
 
@@ -41,10 +45,6 @@ class DartivityMessaging {
   /// 409 indication for subscription
   final int _conflict = 409;
 
-  DartivityMessaging(String dartivityId) {
-    _dartivityId = dartivityId;
-  }
-
   /// initialise
   /// Initialises the messaging class.
   ///
@@ -54,33 +54,33 @@ class DartivityMessaging {
   /// which should be in JSON format
   /// projectName - The project name(actually the google project id)
   /// topic - the subscription topic
-  Future<bool> initialise(String credentialsFile, String projectName,
-      String topic) async {
+  Future<bool> initialise(
+      String credentialsFile, String projectName, String topic) async {
     // Validation
     if (credentialsFile == null) {
       throw new DartivityMessagingException(
-          DartivityMessagingException.NO_CREDFILE_SPECIFIED);
+          DartivityMessagingException.noCredfileSpecified);
     }
 
     if (projectName == null) {
       throw new DartivityMessagingException(
-          DartivityMessagingException.NO_PROJECTNAME_SPECIFIED);
+          DartivityMessagingException.noProjectnameSpecified);
     }
 
     if (topic == null) {
       throw new DartivityMessagingException(
-          DartivityMessagingException.NO_TOPIC_SPECIFIED);
+          DartivityMessagingException.noTopicSpecified);
     }
 
-    Completer completer = new Completer();
+    final Completer completer = new Completer();
     // Get the credentials file as a string and create a credentials class
     _topic = topic;
-    String jsonCredentials = new File(credentialsFile).readAsStringSync();
-    auth.ServiceAccountCredentials credentials =
-    new auth.ServiceAccountCredentials.fromJson(jsonCredentials);
+    final String jsonCredentials = new File(credentialsFile).readAsStringSync();
+    final auth.ServiceAccountCredentials credentials =
+        new auth.ServiceAccountCredentials.fromJson(jsonCredentials);
 
     // Create a scoped pubsub client with our authenticated credentials
-    List<String> scopes = []..addAll(pubsub.PubSub.SCOPES);
+    final List<String> scopes = []..addAll(pubsub.PubSub.SCOPES);
     _client = await auth.clientViaServiceAccount(credentials, scopes);
     _pubsub = new pubsub.PubSub(_client, projectName);
     _authenticated = true;
@@ -91,7 +91,7 @@ class DartivityMessaging {
     } catch (e) {
       if (e.status != _conflict) {
         throw new DartivityMessagingException(
-            DartivityMessagingException.SUBSCRIPTION_FAILED);
+            DartivityMessagingException.subscriptionFailed);
       } else {
         _subscription = await _pubsub.lookupSubscription(_dartivityId);
       }
@@ -106,16 +106,16 @@ class DartivityMessaging {
   /// Recieve a message from our subscription
   ///
   /// wait - whether to wait for a message or not, default is not
-  Future<DartivityMessage> receive({wait: false}) async {
-    Completer completer = new Completer();
+  Future<DartivityMessage> receive({bool wait: false}) async {
+    final Completer<DartivityMessage> completer = new Completer<DartivityMessage>();
     if (ready) {
-      var pullEvent = await _subscription.pull(wait: wait);
+      final pullEvent = await _subscription.pull(wait: wait);
       if (pullEvent != null) {
         await pullEvent.acknowledge();
-        String messageString = pullEvent.message.asString;
+        final String messageString = pullEvent.message.asString;
         try {
-          DartivityMessage dartivityMessage =
-          new DartivityMessage.fromJSON(messageString);
+          final DartivityMessage dartivityMessage =
+              new DartivityMessage.fromJSON(messageString);
           completer.complete(dartivityMessage);
         } catch (e) {
           completer.complete(null);
@@ -135,9 +135,9 @@ class DartivityMessaging {
   ///
   /// message - the message string to send
   Future<DartivityMessage> send(DartivityMessage message) async {
-    Completer completer = new Completer();
+    final Completer<DartivityMessage> completer = new Completer<DartivityMessage>();
     if (ready) {
-      var res = await _subscription.topic.publishString(message.toJSON());
+      await _subscription.topic.publishString(message.toJSON());
       completer.complete(message);
     } else {
       completer.complete(null);

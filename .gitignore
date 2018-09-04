@@ -19,3 +19,6 @@ pubspec.lock
 
 # Credentials
 test/lib/credentials
+
+# Dart 2 additions
+.dart_tool/

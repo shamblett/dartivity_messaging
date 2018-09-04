@@ -12,7 +12,7 @@ import 'dart:async';
 
 import 'package:gcloud/pubsub.dart' as pubsub;
 import 'package:googleapis_auth/auth_io.dart' as auth;
-import 'package:json_object/json_object.dart' as jsonobject;
+import 'package:json_object_lite/json_object_lite.dart' as jsonobject;
 
 part 'src/dartivity_messaging.dart';
 part 'src/messages/dartivity_message.dart';
