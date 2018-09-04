@@ -288,7 +288,7 @@ int main() {
     });
 
     test("Initialise - send/receive", () async {
-      String credentialsPath = Directory.current.path + cfg.messCredPath;
+      final String credentialsPath = Directory.current.path + cfg.messCredPath;
       print("Credentials path: $credentialsPath");
       bool res = await client1.initialise(
           credentialsPath, cfg.messProjectId, cfg.messTopic);
