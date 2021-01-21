@@ -26,21 +26,21 @@ class DartivityMessaging {
   bool get ready => _authenticated && _initialised;
 
   /// Pubsub topic
-  String _topic;
+  String? _topic;
 
-  String get topic => _topic;
+  String? get topic => _topic;
 
   /// Pubsub subscription
-  pubsub.Subscription _subscription;
+  late pubsub.Subscription _subscription;
 
   /// PubSub client
-  pubsub.PubSub _pubsub;
+  late pubsub.PubSub _pubsub;
 
   /// Dartivity client id
-  String _dartivityId;
+  late String _dartivityId;
 
   /// Auth client, needed for closing
-  auth.AutoRefreshingAuthClient _client;
+  late auth.AutoRefreshingAuthClient _client;
 
   /// 409 indication for subscription
   final int _conflict = 409;
@@ -55,7 +55,7 @@ class DartivityMessaging {
   /// projectName - The project name(actually the google project id)
   /// topic - the subscription topic
   Future<bool> initialise(
-      String credentialsFile, String projectName, String topic) async {
+      String? credentialsFile, String? projectName, String? topic) async {
     // Validation
     if (credentialsFile == null) {
       throw new DartivityMessagingException(

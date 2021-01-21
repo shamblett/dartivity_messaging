@@ -27,8 +27,8 @@ part of dartivity_messaging;
 enum MessageType { whoHas, iHave, resourceDetails, clientInfo, unknown }
 
 class DartivityMessage {
-  DartivityMessage.whoHas(String source, String resourceName,
-      [String host = "", bool refreshCache = false]) {
+  DartivityMessage.whoHas(String? source, String? resourceName,
+      [String? host = "", bool refreshCache = false]) {
     if ((source == null) || (resourceName == null) || (host == null)) {
       throw new DartivityMessagingException(
           DartivityMessagingException.invalidWhohasMessage);
@@ -41,8 +41,8 @@ class DartivityMessage {
     _refreshCache = refreshCache;
   }
 
-  DartivityMessage.iHave(String source, String destination, String resourceName,
-      Map<String, dynamic> resourceDetails, String host, String provider) {
+  DartivityMessage.iHave(String? source, String? destination, String? resourceName,
+      Map<String, dynamic>? resourceDetails, String? host, String? provider) {
     if ((source == null) ||
         (resourceDetails == null) ||
         (destination == null) ||
@@ -107,47 +107,47 @@ class DartivityMessage {
   MessageType get type => _type;
 
   /// Dartivity source
-  String _source = "";
+  String? _source = "";
 
-  String get source => _source;
+  String? get source => _source;
 
   /// Dartivity Destination
-  String _destination = "";
+  String? _destination = "";
 
-  String get destination => _destination;
+  String? get destination => _destination;
 
   // Source/destination constants
   static const String addressGlobal = "global";
   static const String addressWebServer = "web-server";
 
   /// Resource name, also known as the resource Uri
-  String _resourceName = "";
+  String? _resourceName = "";
 
-  String get resourceName => _resourceName;
+  String? get resourceName => _resourceName;
 
   /// Resource host
-  String _host = "";
+  String? _host = "";
 
-  String get host => _host;
+  String? get host => _host;
 
   /// Provider , eg Iotivity
   static const String providerUnknown = "Unknown";
   static const String providerIotivity = "Iotivity";
-  String _provider = providerUnknown;
+  String? _provider = providerUnknown;
 
-  String get provider => _provider;
+  String? get provider => _provider;
 
   /// Resource details
-  Map<String, dynamic> _resourceDetails = {};
+  Map<String, dynamic>? _resourceDetails = {};
 
   /// Invalidate cache instruction to clients, causes co-operating
   /// clients to refresh local caches for the current whoHas message.
   /// Advisory only, clients can ignore this if they wish.
-  bool _refreshCache = false;
+  bool? _refreshCache = false;
 
-  bool get refreshCache => _refreshCache;
+  bool? get refreshCache => _refreshCache;
 
-  Map<String, dynamic> get resourceDetails => _resourceDetails;
+  Map<String, dynamic>? get resourceDetails => _resourceDetails;
 
   /// toJSON
   String toJSON() {
