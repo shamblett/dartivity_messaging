@@ -24,7 +24,8 @@ class DartivityMessagingException implements Exception {
       'A iHave message must have a source, destination, resource id and resource details';
   static const String subscriptionFailed =
       'Failed to create the messaging subscription';
-  String? _message = 'No Message Supplied';
+  final String? _message;
 
-  String toString() => header + "${_message}";
+  @override
+  String toString() => header + '${_message}';
 }

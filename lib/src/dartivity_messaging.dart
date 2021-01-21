@@ -55,31 +55,31 @@ class DartivityMessaging {
       String? credentialsFile, String? projectName, String? topic) async {
     // Validation
     if (credentialsFile == null) {
-      throw new DartivityMessagingException(
+      throw DartivityMessagingException(
           DartivityMessagingException.noCredfileSpecified);
     }
 
     if (projectName == null) {
-      throw new DartivityMessagingException(
+      throw DartivityMessagingException(
           DartivityMessagingException.noProjectnameSpecified);
     }
 
     if (topic == null) {
-      throw new DartivityMessagingException(
+      throw DartivityMessagingException(
           DartivityMessagingException.noTopicSpecified);
     }
 
-    final Completer<bool> completer = new Completer<bool>();
+    final completer = Completer<bool>();
     // Get the credentials file as a string and create a credentials class
     _topic = topic;
-    final String jsonCredentials = new File(credentialsFile).readAsStringSync();
-    final auth.ServiceAccountCredentials credentials =
-        new auth.ServiceAccountCredentials.fromJson(jsonCredentials);
+    final jsonCredentials = File(credentialsFile).readAsStringSync();
+    final credentials =
+        auth.ServiceAccountCredentials.fromJson(jsonCredentials);
 
     // Create a scoped pubsub client with our authenticated credentials
-    final List<String> scopes = []..addAll(pubsub.PubSub.SCOPES);
+    final scopes = [...pubsub.PubSub.SCOPES];
     _client = await auth.clientViaServiceAccount(credentials, scopes);
-    _pubsub = new pubsub.PubSub(_client, projectName);
+    _pubsub = pubsub.PubSub(_client, projectName);
     _authenticated = true;
 
     // Subscribe to our topic, conflict means already subscribed from this client
@@ -88,7 +88,7 @@ class DartivityMessaging {
       // Failed to create, try a lookup
       _subscription = await _pubsub.lookupSubscription(_dartivityId);
       if (_subscription.name != _dartivityId) {
-        throw new DartivityMessagingException(
+        throw DartivityMessagingException(
             DartivityMessagingException.subscriptionFailed);
       }
     }
@@ -102,16 +102,14 @@ class DartivityMessaging {
   /// Recieve a message from our subscription
   ///
   /// wait - whether to wait for a message or not, default is not
-  Future<DartivityMessage> receive({bool wait: false}) async {
-    final Completer<DartivityMessage> completer =
-        new Completer<DartivityMessage>();
+  Future<DartivityMessage> receive({bool wait = false}) async {
+    final completer = Completer<DartivityMessage>();
     if (ready) {
       final pullEvent = await _subscription.pull(wait: wait);
       await pullEvent.acknowledge();
       final String messageString = pullEvent.message.asString;
       try {
-        final DartivityMessage dartivityMessage =
-            new DartivityMessage.fromJSON(messageString);
+        final dartivityMessage = DartivityMessage.fromJSON(messageString);
         completer.complete(dartivityMessage);
       } catch (e) {
         completer.complete(null);
@@ -128,8 +126,7 @@ class DartivityMessaging {
   ///
   /// message - the message string to send
   Future<DartivityMessage> send(DartivityMessage message) async {
-    final Completer<DartivityMessage> completer =
-        new Completer<DartivityMessage>();
+    final completer = Completer<DartivityMessage>();
     if (ready) {
       await _subscription.topic.publishString(message.toJSON());
       completer.complete(message);

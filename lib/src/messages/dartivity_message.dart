@@ -28,9 +28,9 @@ enum MessageType { whoHas, iHave, resourceDetails, clientInfo, unknown }
 
 class DartivityMessage {
   DartivityMessage.whoHas(String? source, String? resourceName,
-      [String? host = "", bool refreshCache = false]) {
+      [String? host = '', bool refreshCache = false]) {
     if ((source == null) || (resourceName == null) || (host == null)) {
-      throw new DartivityMessagingException(
+      throw DartivityMessagingException(
           DartivityMessagingException.invalidWhohasMessage);
     }
     _type = MessageType.whoHas;
@@ -41,15 +41,20 @@ class DartivityMessage {
     _refreshCache = refreshCache;
   }
 
-  DartivityMessage.iHave(String? source, String? destination, String? resourceName,
-      Map<String, dynamic>? resourceDetails, String? host, String? provider) {
+  DartivityMessage.iHave(
+      String? source,
+      String? destination,
+      String? resourceName,
+      Map<String, dynamic>? resourceDetails,
+      String? host,
+      String? provider) {
     if ((source == null) ||
         (resourceDetails == null) ||
         (destination == null) ||
         (resourceName == null) ||
         (host == null) ||
         (provider == null)) {
-      throw new DartivityMessagingException(
+      throw DartivityMessagingException(
           DartivityMessagingException.invalidIhaveMessage);
     }
     _type = MessageType.iHave;
@@ -63,20 +68,18 @@ class DartivityMessage {
 
   /// fromJson
   DartivityMessage.fromJSON(String input) {
-      final jsonobject.JsonObjectLite jsonobj =
-          new jsonobject.JsonObjectLite.fromJsonString(input);
-      final List<MessageType> types = MessageType.values;
-      _type = types[(jsonobj as dynamic).type];
-      _host = jsonobj['host'] = (jsonobj as dynamic).host;
-      _provider = jsonobj['provider'] = (jsonobj as dynamic).provider;
-      _source = jsonobj['source'] = (jsonobj as dynamic).source;
-      _destination = jsonobj['destination'] = (jsonobj as dynamic).destination;
-      _resourceName =
-          jsonobj['resourceName'] = (jsonobj as dynamic).resourceName;
-      _resourceDetails =
-          jsonobj['resourceDetails'] = (jsonobj as dynamic).resourceDetails;
-      _refreshCache =
-          jsonobj['refreshCache'] = (jsonobj as dynamic).refreshCache;
+    final jsonobject.JsonObjectLite jsonobj =
+        jsonobject.JsonObjectLite.fromJsonString(input);
+    final types = MessageType.values;
+    _type = types[(jsonobj as dynamic).type];
+    _host = jsonobj['host'] = (jsonobj as dynamic).host;
+    _provider = jsonobj['provider'] = (jsonobj as dynamic).provider;
+    _source = jsonobj['source'] = (jsonobj as dynamic).source;
+    _destination = jsonobj['destination'] = (jsonobj as dynamic).destination;
+    _resourceName = jsonobj['resourceName'] = (jsonobj as dynamic).resourceName;
+    _resourceDetails =
+        jsonobj['resourceDetails'] = (jsonobj as dynamic).resourceDetails;
+    _refreshCache = jsonobj['refreshCache'] = (jsonobj as dynamic).refreshCache;
   }
 
   /// fromJsonObject
@@ -84,7 +87,7 @@ class DartivityMessage {
     if (input == null) {
       _type = MessageType.unknown;
     } else {
-      final List<MessageType> types = MessageType.values;
+      final types = MessageType.values;
       _type = types[input.type];
       _source = input.source;
       _destination = input.destination;
@@ -103,32 +106,32 @@ class DartivityMessage {
   MessageType get type => _type;
 
   /// Dartivity source
-  String? _source = "";
+  String? _source = '';
 
   String? get source => _source;
 
   /// Dartivity Destination
-  String? _destination = "";
+  String? _destination = '';
 
   String? get destination => _destination;
 
   // Source/destination constants
-  static const String addressGlobal = "global";
-  static const String addressWebServer = "web-server";
+  static const String addressGlobal = 'global';
+  static const String addressWebServer = 'web-server';
 
   /// Resource name, also known as the resource Uri
-  String? _resourceName = "";
+  String? _resourceName = '';
 
   String? get resourceName => _resourceName;
 
   /// Resource host
-  String? _host = "";
+  String? _host = '';
 
   String? get host => _host;
 
   /// Provider , eg Iotivity
-  static const String providerUnknown = "Unknown";
-  static const String providerIotivity = "Iotivity";
+  static const String providerUnknown = 'Unknown';
+  static const String providerIotivity = 'Iotivity';
   String? _provider = providerUnknown;
 
   String? get provider => _provider;
@@ -147,7 +150,7 @@ class DartivityMessage {
 
   /// toJSON
   String toJSON() {
-    final dynamic output = new jsonobject.JsonObjectLite();
+    final dynamic output = jsonobject.JsonObjectLite();
     output.type = type.index;
     output.source = _source;
     output.destination = _destination;
@@ -161,20 +164,23 @@ class DartivityMessage {
   }
 
   /// toString
+  @override
   String toString() {
-    return "Type : ${type}, Provider : ${provider}, Host : ${host}, Source : ${source}, Destination : ${destination}, Resource Name : ${resourceName}, Resource Details : ${resourceDetails.toString()}";
+    return 'Type : ${type}, Provider : ${provider}, Host : ${host}, Source : ${source}, Destination : ${destination}, Resource Name : ${resourceName}, Resource Details : ${resourceDetails.toString()}';
   }
 
   /// equals ovverride
+  @override
   bool operator ==(dynamic other) {
     if (other is DartivityMessage) {
-      bool state = false;
-      this.resourceName == other.resourceName ? state = true : null;
+      var state = false;
+      resourceName == other.resourceName ? state = true : null;
       return state;
     } else {
       return false;
     }
   }
 
+  @override
   int get hashCode => resourceName.hashCode;
 }

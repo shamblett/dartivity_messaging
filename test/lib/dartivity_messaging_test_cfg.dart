@@ -13,7 +13,7 @@ const String messProjectId = 'warm-actor-356';
 
 /// Topic for pubsub
 const String messTopic =
-    "projects/${messProjectId}/topics/${messPackageName}_test";
+    'projects/${messProjectId}/topics/${messPackageName}_test';
 
 const String messCredPath =
     '\\test\\lib\\credentials\\Development-5d8666050474.json';
