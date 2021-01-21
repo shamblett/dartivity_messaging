@@ -63,9 +63,6 @@ class DartivityMessage {
 
   /// fromJson
   DartivityMessage.fromJSON(String input) {
-    if (input == null) {
-      _type = MessageType.unknown;
-    } else {
       final jsonobject.JsonObjectLite jsonobj =
           new jsonobject.JsonObjectLite.fromJsonString(input);
       final List<MessageType> types = MessageType.values;
@@ -80,7 +77,6 @@ class DartivityMessage {
           jsonobj['resourceDetails'] = (jsonobj as dynamic).resourceDetails;
       _refreshCache =
           jsonobj['refreshCache'] = (jsonobj as dynamic).refreshCache;
-    }
   }
 
   /// fromJsonObject

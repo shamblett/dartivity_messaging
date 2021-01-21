@@ -42,9 +42,6 @@ class DartivityMessaging {
   /// Auth client, needed for closing
   late auth.AutoRefreshingAuthClient _client;
 
-  /// 409 indication for subscription
-  final int _conflict = 409;
-
   /// initialise
   /// Initialises the messaging class.
   ///
@@ -86,14 +83,13 @@ class DartivityMessaging {
     _authenticated = true;
 
     // Subscribe to our topic, conflict means already subscribed from this client
-    try {
-      _subscription = await _pubsub.createSubscription(_dartivityId, topic);
-    } catch (e) {
-      if (e.status != _conflict) {
+    _subscription = await _pubsub.createSubscription(_dartivityId, topic);
+    if (_subscription.name != _dartivityId) {
+      // Failed to create, try a lookup
+      _subscription = await _pubsub.lookupSubscription(_dartivityId);
+      if (_subscription.name != _dartivityId) {
         throw new DartivityMessagingException(
             DartivityMessagingException.subscriptionFailed);
-      } else {
-        _subscription = await _pubsub.lookupSubscription(_dartivityId);
       }
     }
     _initialised = true;
@@ -111,17 +107,13 @@ class DartivityMessaging {
         new Completer<DartivityMessage>();
     if (ready) {
       final pullEvent = await _subscription.pull(wait: wait);
-      if (pullEvent != null) {
-        await pullEvent.acknowledge();
-        final String messageString = pullEvent.message.asString;
-        try {
-          final DartivityMessage dartivityMessage =
-              new DartivityMessage.fromJSON(messageString);
-          completer.complete(dartivityMessage);
-        } catch (e) {
-          completer.complete(null);
-        }
-      } else {
+      await pullEvent.acknowledge();
+      final String messageString = pullEvent.message.asString;
+      try {
+        final DartivityMessage dartivityMessage =
+            new DartivityMessage.fromJSON(messageString);
+        completer.complete(dartivityMessage);
+      } catch (e) {
         completer.complete(null);
       }
     } else {

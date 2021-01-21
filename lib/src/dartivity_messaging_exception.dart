@@ -7,6 +7,9 @@
 part of dartivity_messaging;
 
 class DartivityMessagingException implements Exception {
+  /// Dartivity messaging exception
+  DartivityMessagingException([this._message]);
+
   // Exception message strings
   static const String header = 'DartivityMessagingException: ';
   static const String noCredfileSpecified =
@@ -22,9 +25,6 @@ class DartivityMessagingException implements Exception {
   static const String subscriptionFailed =
       'Failed to create the messaging subscription';
   String? _message = 'No Message Supplied';
-
-  /// Dartivity messaging exception
-  DartivityMessagingException([this._message]);
 
   String toString() => header + "${_message}";
 }
