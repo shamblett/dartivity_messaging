@@ -12,9 +12,7 @@
 part of dartivity_messaging;
 
 class DartivityMessaging {
-  DartivityMessaging(String dartivityId) {
-    _dartivityId = dartivityId;
-  }
+  DartivityMessaging(this._dartivityId);
 
   /// Authenticated
   bool _authenticated = false;
@@ -26,24 +24,21 @@ class DartivityMessaging {
   bool get ready => _authenticated && _initialised;
 
   /// Pubsub topic
-  String _topic;
+  late String _topic;
 
   String get topic => _topic;
 
   /// Pubsub subscription
-  pubsub.Subscription _subscription;
+  late pubsub.Subscription _subscription;
 
   /// PubSub client
-  pubsub.PubSub _pubsub;
+  late pubsub.PubSub _pubsub;
 
   /// Dartivity client id
   String _dartivityId;
 
   /// Auth client, needed for closing
-  auth.AutoRefreshingAuthClient _client;
-
-  /// 409 indication for subscription
-  final int _conflict = 409;
+  late auth.AutoRefreshingAuthClient _client;
 
   /// initialise
   /// Initialises the messaging class.
@@ -57,17 +52,17 @@ class DartivityMessaging {
   Future<bool> initialise(
       String credentialsFile, String projectName, String topic) async {
     // Validation
-    if (credentialsFile == null) {
+    if (credentialsFile.isEmpty) {
       throw new DartivityMessagingException(
           DartivityMessagingException.noCredfileSpecified);
     }
 
-    if (projectName == null) {
+    if (projectName.isEmpty) {
       throw new DartivityMessagingException(
           DartivityMessagingException.noProjectnameSpecified);
     }
 
-    if (topic == null) {
+    if (topic.isEmpty) {
       throw new DartivityMessagingException(
           DartivityMessagingException.noTopicSpecified);
     }
@@ -85,17 +80,8 @@ class DartivityMessaging {
     _pubsub = new pubsub.PubSub(_client, projectName);
     _authenticated = true;
 
-    // Subscribe to our topic, conflict means already subscribed from this client
-    try {
-      _subscription = await _pubsub.createSubscription(_dartivityId, topic);
-    } catch (e) {
-      if (e.status != _conflict) {
-        throw new DartivityMessagingException(
-            DartivityMessagingException.subscriptionFailed);
-      } else {
-        _subscription = await _pubsub.lookupSubscription(_dartivityId);
-      }
-    }
+    // Subscribe to our topic
+    _subscription = await _pubsub.createSubscription(_dartivityId, topic);
     _initialised = true;
     completer.complete(_initialised);
     return completer.future;
@@ -106,7 +92,7 @@ class DartivityMessaging {
   /// Recieve a message from our subscription
   ///
   /// wait - whether to wait for a message or not, default is not
-  Future<DartivityMessage> receive({bool wait: false}) async {
+  Future<DartivityMessage> receive({bool wait = false}) async {
     final Completer<DartivityMessage> completer =
         new Completer<DartivityMessage>();
     if (ready) {
@@ -119,13 +105,13 @@ class DartivityMessaging {
               new DartivityMessage.fromJSON(messageString);
           completer.complete(dartivityMessage);
         } catch (e) {
-          completer.complete(null);
+          completer.complete(DartivityMessage.fromJSON(''));
         }
       } else {
-        completer.complete(null);
+        completer.complete(DartivityMessage.fromJSON(''));
       }
     } else {
-      completer.complete(null);
+      completer.complete(DartivityMessage.fromJSON(''));
     }
     return completer.future;
   }
@@ -142,7 +128,7 @@ class DartivityMessaging {
       await _subscription.topic.publishString(message.toJSON());
       completer.complete(message);
     } else {
-      completer.complete(null);
+      completer.complete(DartivityMessage.fromJSON(''));
     }
     return completer.future;
   }

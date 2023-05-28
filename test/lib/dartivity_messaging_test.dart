@@ -20,7 +20,7 @@ int main() {
   group("Message Tests", () {
     test("Who Has  - invalid source", () {
       try {
-        final DartivityMessage message = new DartivityMessage.whoHas(null, "");
+        final DartivityMessage message = new DartivityMessage.whoHas('', '');
         print(message);
       } catch (e) {
         expect(e.runtimeType.toString(), 'DartivityMessagingException');
@@ -33,7 +33,7 @@ int main() {
 
     test("Who Has  - invalid resource name", () {
       try {
-        final DartivityMessage message = new DartivityMessage.whoHas("", null);
+        final DartivityMessage message = new DartivityMessage.whoHas('', '');
         print(message);
       } catch (e) {
         expect(e.runtimeType.toString(), 'DartivityMessagingException');
@@ -47,7 +47,7 @@ int main() {
     test("Who Has  - invalid host", () {
       try {
         final DartivityMessage message =
-            new DartivityMessage.whoHas(null, null, null);
+            new DartivityMessage.whoHas('', '', '');
         print(message);
       } catch (e) {
         expect(e.runtimeType.toString(), 'DartivityMessagingException');
@@ -100,7 +100,7 @@ int main() {
     test("I Have  - invalid source", () {
       try {
         final DartivityMessage message =
-            new DartivityMessage.iHave(null, "", "", {}, "", "");
+            new DartivityMessage.iHave('', '', '', {}, '', '');
         print(message);
       } catch (e) {
         expect(e.runtimeType.toString(), 'DartivityMessagingException');
@@ -114,7 +114,7 @@ int main() {
     test("I Have  - invalid destination", () {
       try {
         final DartivityMessage message =
-            new DartivityMessage.iHave("", null, "", {}, "", "");
+            new DartivityMessage.iHave('', '', '', {}, '', '');
         print(message);
       } catch (e) {
         expect(e.runtimeType.toString(), 'DartivityMessagingException');
@@ -128,7 +128,7 @@ int main() {
     test("I Have  - invalid resource name", () {
       try {
         final DartivityMessage message =
-            new DartivityMessage.iHave("", "", null, {}, "", "");
+            new DartivityMessage.iHave('', '', '', {}, '', '');
         print(message);
       } catch (e) {
         expect(e.runtimeType.toString(), 'DartivityMessagingException');
@@ -142,7 +142,7 @@ int main() {
     test("I Have  - invalid resource details", () {
       try {
         final DartivityMessage message =
-            new DartivityMessage.iHave("", "", "", null, "", "");
+            new DartivityMessage.iHave('', '', '', <String, dynamic>{}, '', '');
         print(message);
       } catch (e) {
         expect(e.runtimeType.toString(), 'DartivityMessagingException');
@@ -156,7 +156,7 @@ int main() {
     test("I Have  - invalid host", () {
       try {
         final DartivityMessage message =
-            new DartivityMessage.iHave("", "", "", {}, null, "");
+            new DartivityMessage.iHave('', '', '', {}, '', '');
         print(message);
       } catch (e) {
         expect(e.runtimeType.toString(), 'DartivityMessagingException');
@@ -170,7 +170,7 @@ int main() {
     test("I Have  - invalid provider", () {
       try {
         final DartivityMessage message =
-            new DartivityMessage.iHave("", "", "", {}, "", null);
+            new DartivityMessage.iHave('', '', '', {}, '', '');
         print(message);
       } catch (e) {
         expect(e.runtimeType.toString(), 'DartivityMessagingException');
@@ -238,7 +238,7 @@ int main() {
 
     test("Send before initialised", () async {
       final DartivityMessage noSend = new DartivityMessage.iHave(
-          "", "", "", {}, "", DartivityMessage.providerIotivity);
+          '', '', '', {}, '', DartivityMessage.providerIotivity);
       final res = await client1.send(noSend);
       expect(res, isNull);
     });
@@ -251,7 +251,7 @@ int main() {
     test("Initialise - No credentials", () async {
       try {
         final bool res =
-            await client1.initialise(null, cfg.messProjectId, cfg.messTopic);
+            await client1.initialise('', cfg.messProjectId, cfg.messTopic);
         print(res);
       } catch (e) {
         expect(
@@ -264,7 +264,7 @@ int main() {
     test("Initialise - No project name", () async {
       try {
         final bool res =
-            await client1.initialise(cfg.messCredPath, null, cfg.messTopic);
+            await client1.initialise(cfg.messCredPath, '', cfg.messTopic);
         print(res);
       } catch (e) {
         expect(
@@ -277,7 +277,7 @@ int main() {
     test("Initialise - No topic", () async {
       try {
         final bool res =
-            await client1.initialise(cfg.messCredPath, cfg.messTopic, null);
+            await client1.initialise(cfg.messCredPath, cfg.messTopic, '');
         print(res);
       } catch (e) {
         expect(

@@ -29,7 +29,7 @@ enum MessageType { whoHas, iHave, resourceDetails, clientInfo, unknown }
 class DartivityMessage {
   DartivityMessage.whoHas(String source, String resourceName,
       [String host = "", bool refreshCache = false]) {
-    if ((source == null) || (resourceName == null) || (host == null)) {
+    if ((source.isEmpty) || (resourceName.isEmpty) || (host.isEmpty)) {
       throw new DartivityMessagingException(
           DartivityMessagingException.invalidWhohasMessage);
     }
@@ -43,12 +43,12 @@ class DartivityMessage {
 
   DartivityMessage.iHave(String source, String destination, String resourceName,
       Map<String, dynamic> resourceDetails, String host, String provider) {
-    if ((source == null) ||
-        (resourceDetails == null) ||
-        (destination == null) ||
-        (resourceName == null) ||
-        (host == null) ||
-        (provider == null)) {
+    if ((source.isEmpty) ||
+        (resourceDetails.isEmpty) ||
+        (destination.isEmpty) ||
+        (resourceName.isEmpty) ||
+        (host.isEmpty) ||
+        (provider.isEmpty)) {
       throw new DartivityMessagingException(
           DartivityMessagingException.invalidIhaveMessage);
     }
@@ -63,7 +63,7 @@ class DartivityMessage {
 
   /// fromJson
   DartivityMessage.fromJSON(String input) {
-    if (input == null) {
+    if (input.isEmpty) {
       _type = MessageType.unknown;
     } else {
       final jsonobject.JsonObjectLite jsonobj =
